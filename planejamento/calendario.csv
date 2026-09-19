@@ -1,0 +1,8 @@
+data,dia_semana,pauta,tipo,objetivo,produto,status,roteiro_arquivo,observacoes
+2026-09-21,segunda,5 jogos indie atemporais pra anotar,alcance,alcance/descoberta,N/A,roteiro_pronto,entregas/roteiro-01-alcance-jogos-indie-atemporais.md,Tema duradouro sem dependencia de noticia do dia
+2026-09-22,terca,3 perguntas antes de comprar um headset gamer,ajuda_compra,ajudar decisao de compra,N/A,roteiro_pronto,entregas/roteiro-02-ajuda-compra-headset-gamer.md,Nao cita marca nem preco especifico
+2026-09-23,quarta,desafio: monte seu setup gamer em 3 categorias,alcance,engajamento/comentarios,N/A,roteiro_pronto,entregas/roteiro-03-alcance-desafio-setup.md,Formato de participacao/comentario
+2026-09-24,quinta,oferta do dia (produto a definir),oferta,venda,PENDENTE,pendente_produto,,Aguardando cadastro em contexto/produtos.csv antes de escrever o roteiro
+2026-09-25,sexta,3 erros comuns ao montar PC gamer barato,ajuda_compra,ajudar decisao de compra,N/A,pauta_definida,,Roteiro ainda nao escrito - acionar conteudo-gamer
+2026-09-26,sabado,tendencia/desafio do momento no nicho games,alcance,alcance/descoberta,N/A,pauta_definida,,Pesquisar tendencia real antes de escrever - conteudo-gamer deve checar fonte
+2026-09-27,domingo,oferta da semana (produto a definir),oferta,venda,PENDENTE,pendente_produto,,Aguardando cadastro em contexto/produtos.csv antes de escrever o roteiro
