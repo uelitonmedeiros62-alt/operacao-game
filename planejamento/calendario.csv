@@ -1,8 +1,8 @@
-data,dia_semana,pauta,tipo,objetivo,produto,status,roteiro_arquivo,observacoes
-2026-09-21,segunda,5 jogos indie atemporais pra anotar,alcance,alcance/descoberta,N/A,roteiro_pronto,entregas/roteiro-01-alcance-jogos-indie-atemporais.md,Tema duradouro sem dependencia de noticia do dia
-2026-09-22,terca,3 perguntas antes de comprar um headset gamer,ajuda_compra,ajudar decisao de compra,N/A,roteiro_pronto,entregas/roteiro-02-ajuda-compra-headset-gamer.md,Nao cita marca nem preco especifico
-2026-09-23,quarta,desafio: monte seu setup gamer em 3 categorias,alcance,engajamento/comentarios,N/A,roteiro_pronto,entregas/roteiro-03-alcance-desafio-setup.md,Formato de participacao/comentario
-2026-09-24,quinta,oferta do dia (produto a definir),oferta,venda,PENDENTE,pendente_produto,,Aguardando cadastro em contexto/produtos.csv antes de escrever o roteiro
-2026-09-25,sexta,3 erros comuns ao montar PC gamer barato,ajuda_compra,ajudar decisao de compra,N/A,pauta_definida,,Roteiro ainda nao escrito - acionar conteudo-gamer
-2026-09-26,sabado,tendencia/desafio do momento no nicho games,alcance,alcance/descoberta,N/A,pauta_definida,,Pesquisar tendencia real antes de escrever - conteudo-gamer deve checar fonte
-2026-09-27,domingo,oferta da semana (produto a definir),oferta,venda,PENDENTE,pendente_produto,,Aguardando cadastro em contexto/produtos.csv antes de escrever o roteiro
+data,dia_semana,pauta,tipo,objetivo,produto,tiktok_status,instagram_status,roteiro_arquivo,observacoes
+2026-09-21,segunda,Quem e o Modo Replay + uma curiosidade gamer,alcance/apresentacao,apresentar a marca e comecar a fixar os 3 posts do perfil,N/A,roteiro_pronto,roteiro_pronto,entregas/roteiro-04-apresentacao-modo-replay.md,Video de lancamento - candidato a publicacao fixada nas duas redes
+2026-09-22,terca,3 perguntas antes de comprar um headset gamer,ajuda_compra,ajudar decisao de compra,N/A,roteiro_pronto,roteiro_pronto,entregas/roteiro-02-ajuda-compra-headset-gamer.md,Reaproveitado do teste editorial anterior - nao cita marca nem preco especifico
+2026-09-23,quarta,Desafio: monte seu setup gamer em 3 categorias,alcance,engajamento/comentarios,N/A,roteiro_pronto,roteiro_pronto,entregas/roteiro-03-alcance-desafio-setup.md,Reaproveitado do teste editorial anterior - formato de participacao/comentario
+2026-09-24,quinta,Oferta PS5 (aguardando link),oferta,venda,PS5,pendente_produto,pendente_produto,,Aguardando o link do PS5 ser reenviado - ofertas-gamer verifica preco/modelo/condicoes antes do roteiro
+2026-09-25,sexta,3 erros comuns ao montar PC gamer barato,ajuda_compra,ajudar decisao de compra,N/A,pauta_definida,pauta_definida,,Roteiro ainda nao escrito - acionar conteudo-gamer
+2026-09-26,sabado,Tendencia/desafio do momento no nicho games,alcance,alcance/descoberta,N/A,pauta_definida,pauta_definida,,Pesquisar tendencia real antes de escrever - conteudo-gamer deve checar fonte e marcar noticia vs rumor
+2026-09-27,domingo,Oferta PS5 - reforco (aguardando link),oferta,venda,PS5,pendente_produto,pendente_produto,,Segunda chance de oferta na semana - so escrever roteiro depois do produto verificado

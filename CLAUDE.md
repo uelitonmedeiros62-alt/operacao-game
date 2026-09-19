@@ -7,6 +7,18 @@ horário de referência: **America/Sao_Paulo**.
 Ueliton não tem conhecimento técnico. Sempre que instruir os próximos passos,
 explique em linguagem simples, sem jargão técnico.
 
+## Identidade da marca (confirmado pelo Ueliton)
+
+- **Nome da marca:** Modo Replay
+- **TikTok:** `@achoulevou.store_achados` (mantido por enquanto)
+- **Instagram:** `@modo_replaybr`
+
+Essas contas foram confirmadas com dado real de integração (não é suposição
+— ver `integracoes.md`). Qualquer outra conta que apareça conectada (ex.:
+uma marca antiga no Metricool) e não bater com esses dois identificadores
+não deve ser tratada como parte desta operação sem confirmação explícita do
+Ueliton.
+
 ## Objetivos da operação
 
 1. Crescer a audiência no TikTok com conteúdo gamer relevante e original.

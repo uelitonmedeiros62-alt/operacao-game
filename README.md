@@ -32,9 +32,12 @@ português, para uso sem conhecimento técnico.
 
 ## O que já está pronto agora
 
-- Um calendário de teste de 7 dias em `planejamento/calendario.csv`.
-- 3 roteiros completos, prontos para gravar, em `entregas/`.
-- A estrutura de cadastro de produtos, resultados e decisões.
+- Contas confirmadas: TikTok `@achoulevou.store_achados` e Instagram
+  `@modo_replaybr`, marca **Modo Replay** (ver `contexto/perfil.md`).
+- Um calendário de 7 dias para TikTok e Instagram em `planejamento/calendario.csv`.
+- 4 roteiros completos, prontos para gravar, em `entregas/`.
+- Bios prontas (`entregas/bios.md`) e 3 publicações para fixar/apresentar a marca (`entregas/publicacoes-fixadas.md`).
+- A estrutura de cadastro de produtos, resultados e decisões (PS5 já cadastrado como pendente — falta o link).
 
 ## O que ainda depende de você
 
