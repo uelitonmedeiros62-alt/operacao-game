@@ -34,10 +34,17 @@ português, para uso sem conhecimento técnico.
 
 - Contas confirmadas: TikTok `@achoulevou.store_achados` e Instagram
   `@modo_replaybr`, marca **Modo Replay** (ver `contexto/perfil.md`).
-- Um calendário de 7 dias para TikTok e Instagram em `planejamento/calendario.csv`.
-- 4 roteiros completos, prontos para gravar, em `entregas/`.
+- Um calendário para TikTok e Instagram em `planejamento/calendario.csv`.
+- 5 roteiros completos, prontos para gravar, em `entregas/` (o mais novo,
+  sobre GTA 6, com curiosidades confirmadas por fonte).
 - Bios prontas (`entregas/bios.md`) e 3 publicações para fixar/apresentar a marca (`entregas/publicacoes-fixadas.md`).
-- A estrutura de cadastro de produtos, resultados e decisões (PS5 já cadastrado como pendente — falta o link).
+- Passo a passo para conectar as contas certas no Metricool (`entregas/passo-a-passo-metricool.md`).
+- Fluxo de produção de vídeo enquanto não há integração com o Vizard (`entregas/fluxo-producao-video.md`).
+- A estrutura de cadastro de produtos, resultados e decisões (PS5 cadastrado com o link recebido, mas ainda `pendente` — o link ficou bloqueado pela rede deste ambiente).
+
+**Importante:** roteiro pronto não é vídeo gravado, e calendário não é
+publicação agendada — cada um desses vira realidade só quando você grava e
+publica (ou conecta uma ferramenta de agendamento de verdade).
 
 ## O que ainda depende de você
 
