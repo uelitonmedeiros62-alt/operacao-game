@@ -19,6 +19,7 @@ export function Dialog({ open, onClose, title, children, variant = 'sheet', foot
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const onCloseRef = useRef(onClose);
+  const downOnBackdrop = useRef(false);
   onCloseRef.current = onClose;
 
   useEffect(() => {
@@ -48,8 +49,14 @@ export function Dialog({ open, onClose, title, children, variant = 'sheet', foot
         e.preventDefault();
         onCloseRef.current();
       }}
+      onPointerDown={(e) => {
+        downOnBackdrop.current = e.target === ref.current;
+      }}
       onClick={(e) => {
-        if (e.target === ref.current) onCloseRef.current();
+        // Fecha tocando fora apenas nas janelas menores, e só se o toque começou e
+        // terminou no fundo — evita fechar sem querer ao rolar ou durante a animação.
+        if (variant === 'sheet' && downOnBackdrop.current && e.target === ref.current) onCloseRef.current();
+        downOnBackdrop.current = false;
       }}
     >
       <div className="dialog-inner">

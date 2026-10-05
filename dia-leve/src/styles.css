@@ -1443,3 +1443,17 @@ textarea.input {
     scroll-behavior: auto !important;
   }
 }
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px dashed var(--danger);
+  border-radius: var(--radius);
+}
+
+.group-title {
+  overflow-wrap: anywhere;
+}

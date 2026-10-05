@@ -60,7 +60,7 @@ export function BillsScreen({ onAdd }: { onAdd(): void }) {
           <h2 id="b-late" className="section-title">
             <Icon name="alert" /> Vencidas e não pagas ({late.length})
           </h2>
-          <p className="section-hint">De todos os meses até ontem.</p>
+          <p className="section-hint">De todos os meses até ontem, sem limite de tempo.</p>
           <ItemList items={late} showDate />
         </section>
       )}

@@ -23,12 +23,20 @@ npm run preview    # serve a versão final em http://localhost:4173
 
 A pasta `dist/` pode ser publicada em qualquer hospedagem de arquivos estáticos (Netlify, Vercel, GitHub Pages, Cloudflare Pages…). Os caminhos são relativos, então funciona também em subpastas. **Para instalar no celular e funcionar offline, o site precisa estar em HTTPS** (ou `localhost`).
 
+Prévia em arquivo único (um só HTML, sem instalação e sem modo offline — útil para testar rapidamente):
+
+```bash
+npm run build:single   # gera dist-single/index.html
+```
+
 ### Testes
 
 ```bash
-npm test           # 88 testes: dinheiro, datas, recorrência, interpretador, backup, persistência, contraste
-npm run build && npm run e2e   # 20 cenários no navegador (Chromium/Playwright), simulando um celular
+npm test           # 93 testes: dinheiro, datas, recorrência, interpretador, backup, persistência, contraste
+npm run build && npm run e2e   # 21 cenários no navegador (Chromium/Playwright), simulando um celular
 ```
+
+Para testar a prévia em arquivo único: `npm run build:single && E2E_TARGET=single npm run e2e`.
 
 O `e2e` usa o Chromium indicado em `CHROMIUM_PATH` (padrão `/opt/pw-browsers/chromium`). Se você tiver o Playwright instalado normalmente, rode `npx playwright install chromium` e defina `CHROMIUM_PATH` para o executável.
 
@@ -51,6 +59,7 @@ Depois do primeiro acesso, o app abre e funciona sem internet.
 - **Formulário** tradicional: tarefa, compromisso ou conta.
 - **Semana:** 7 dias (segunda a domingo), navegar entre semanas, voltar para hoje, filtros por tipo, adicionar no dia escolhido.
 - **Contas:** total a pagar e pago do mês (critério: mês do vencimento), vencidas, próximos vencimentos, pagas com data de pagamento, categoria e observação opcionais, repetição mensal. Valores guardados em centavos.
+- **Pendências sem prazo de validade:** tarefas (inclusive ocorrências de tarefas diárias/semanais) e contas não concluídas continuam pendentes para sempre, até serem concluídas, pagas, adiadas ou excluídas. A tela Hoje mostra um resumo (uma linha por item, com “+N anteriores”) e o botão **Ver todas as pendências** abre a lista completa, agrupada, com opção de concluir/pagar todas de uma série.
 - **Recorrência:** tarefas diárias/semanais, compromissos semanais, contas mensais. Cada ocorrência tem situação própria; editar/excluir pergunta “Somente esta” ou “Esta e as próximas”. Conta no dia 31 cai no último dia de meses curtos e volta ao 31. As ocorrências são calculadas (não gravadas), então não duplicam ao recarregar.
 - **Lembretes:** alertas dentro do app com antecedência configurável; notificações do navegador quando permitido (pedido só ao tocar no botão).
 - **Calendário:** exportação `.ics` (todos os compromissos dos próximos 6 meses, ou um compromisso específico).
@@ -64,8 +73,8 @@ Depois do primeiro acesso, o app abre e funciona sem internet.
 - O **interpretador de texto** é baseado em regras: frases muito diferentes dos padrões podem não ser entendidas (o texto é preservado e você pode usar o formulário).
 - Dados **só neste navegador/aparelho**, sem sincronização. Limpar os dados do navegador apaga tudo — faça backup.
 - Importar backup **substitui** os dados atuais (não mescla).
-- Tarefas recorrentes não acumulam atrasos (a próxima ocorrência já aparece); contas recorrentes acumulam (até 12 meses para trás).
-- **Não foi testado em iPhone ou Android reais.** Os testes automatizados rodaram em Chromium simulando tela de celular (390×844 e 320×640).
+- **Não foi testado em iPhone ou Android reais, nem no Safari.** Os testes automatizados rodaram em Chromium simulando tela de celular (390×844 e 320×640); isso não equivale a validar no Safari do iPhone.
+- Requisito estimado para iPhone: **iOS 15.4 ou mais novo** (usa `<dialog>`, `structuredClone` e `crypto.randomUUID`). O código evita recursos que só existem a partir do iOS 16.4 (ex.: *lookbehind* em expressões regulares, verificado por teste).
 
 ## Organização do código
 

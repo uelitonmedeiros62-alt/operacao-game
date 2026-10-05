@@ -46,6 +46,8 @@ interface Store {
   addItems(drafts: ItemDraft[]): Promise<void>;
   edit(occ: Occurrence, draft: ItemDraft, scope: Scope): Promise<void>;
   setDone(occ: Occurrence, done: boolean): Promise<void>;
+  /** Conclui/paga várias ocorrências de uma vez (com desfazer). */
+  setDoneMany(occs: Occurrence[], done: boolean): Promise<void>;
   postpone(occ: Occurrence, date: LocalDate, time?: LocalTime | null): Promise<void>;
   remove(occ: Occurrence, scope: Scope): Promise<void>;
   toggleHighlight(occ: Occurrence): Promise<void>;
@@ -222,6 +224,22 @@ export function AppStoreProvider({ children, repository }: { children: ReactNode
               ? 'Concluído. Muito bem!'
               : 'Reaberto.';
         await commit({ save: [setDoneItem(item, occ.originalDate, done, nowIso(), clock.date)], remove: [] }, msg, true);
+      },
+
+      async setDoneMany(occs, done) {
+        const now = nowIso();
+        const changed = new Map<string, Item>();
+        for (const occ of occs) {
+          const item = changed.get(occ.itemId) ?? findItem(occ.itemId);
+          if (item) changed.set(item.id, setDoneItem(item, occ.originalDate, done, now, clock.date));
+        }
+        if (!changed.size) return;
+        const isBill = occs[0]?.kind === 'bill';
+        const n = occs.length;
+        const msg = isBill
+          ? `${n} ${n === 1 ? 'conta marcada como paga' : 'contas marcadas como pagas'}.`
+          : `${n} ${n === 1 ? 'item concluído' : 'itens concluídos'}.`;
+        await commit({ save: [...changed.values()], remove: [] }, msg, true);
       },
 
       async postpone(occ, date, time) {

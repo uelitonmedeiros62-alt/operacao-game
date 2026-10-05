@@ -6,6 +6,7 @@ import { downloadText } from '../services/download';
 import {
   canPromptInstall,
   detectPlatform,
+  isPreviewBuild,
   isStandalone,
   onInstallAvailabilityChange,
   promptInstall,
@@ -269,7 +270,12 @@ export function SettingsScreen() {
 
       <section className="card" aria-labelledby="s-install">
         <h2 id="s-install">Instalar no celular</h2>
-        {standalone ? (
+        {isPreviewBuild() ? (
+          <p className="hint notice">
+            <Icon name="info" size={16} /> Esta é uma prévia para teste. Nela não é possível instalar o app nem usar sem
+            internet. A versão para instalar é a publicada a partir da pasta dist (veja o README).
+          </p>
+        ) : standalone ? (
           <p className="muted">O Dia Leve já está instalado neste aparelho.</p>
         ) : (
           <>

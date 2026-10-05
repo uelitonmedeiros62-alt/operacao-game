@@ -10,7 +10,13 @@ const BASE = `http://localhost:${PORT}/`;
 const SHOTS = process.env.SHOTS_DIR || 'e2e-screenshots';
 mkdirSync(SHOTS, { recursive: true });
 
-const server = spawn('node', ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'pipe' });
+// E2E_TARGET=single testa a prévia em arquivo único (dist-single/).
+const SINGLE = process.env.E2E_TARGET === 'single';
+const server = spawn(
+  'node',
+  ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort', ...(SINGLE ? ['--outDir', 'dist-single'] : [])],
+  { stdio: 'pipe' },
+);
 for (const sig of ['exit', 'SIGINT', 'SIGTERM']) process.on(sig, () => { server.kill(); if (sig !== 'exit') process.exit(1); });
 await new Promise((resolve, reject) => {
   server.stdout.on('data', (d) => String(d).includes(String(PORT)) && resolve());
@@ -32,7 +38,7 @@ async function check(name, fn) {
     failures++;
     lastFailed = true;
     await page.screenshot({ path: `${SHOTS}/falha-${failures}.png` }).catch(() => {});
-    results.push(`✘ ${name}\n    ${String(e.message).split('\n')[0]}`);
+    results.push(`✘ ${name}\n    ${String(e.message).split('\n').slice(0, 6).join(' | ')}`);
   }
 }
 function assert(cond, msg) {
@@ -323,7 +329,7 @@ await check('Áreas de toque com pelo menos 44px', async () => {
   assert(small.length === 0, `alvos pequenos: ${small.join(', ')}`);
 });
 
-await check('Funciona offline depois do primeiro acesso (service worker)', async () => {
+if (!SINGLE) await check('Funciona offline depois do primeiro acesso (service worker)', async () => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   await page.evaluate(() => navigator.serviceWorker.ready);
@@ -331,6 +337,45 @@ await check('Funciona offline depois do primeiro acesso (service worker)', async
   await page.reload();
   await page.getByRole('navigation', { name: 'Principal' }).waitFor({ timeout: 5000 });
   await context.setOffline(false);
+});
+
+await check('Pendências antigas não somem: resumo na tela Hoje e lista completa', async () => {
+  // Tarefa diária iniciada há 20 dias e conta mensal iniciada há mais de 12 meses.
+  await nav('Adicionar');
+  await page.getByRole('tab', { name: 'Formulário' }).click();
+  await page.getByLabel('O que precisa fazer?').fill('Tomar remédio');
+  await page.getByLabel('Data', { exact: true }).fill('2026-09-15');
+  await page.getByLabel('Repetir').selectOption('daily');
+  await dialog().getByRole('button', { name: 'Salvar' }).click();
+  await dialog().waitFor({ state: 'detached' });
+  await nav('Adicionar');
+  await page.getByRole('tab', { name: 'Formulário' }).click();
+  await page.getByText('Conta', { exact: true }).click();
+  await page.getByLabel('Qual é a conta?').fill('Seguro');
+  await page.getByLabel('Valor', { exact: true }).fill('50');
+  await page.getByLabel('Vencimento', { exact: true }).fill('2025-06-10');
+  await page.getByLabel('Repetir').selectOption('monthly');
+  await dialog().getByRole('button', { name: 'Salvar' }).click();
+  await dialog().waitFor({ state: 'detached' });
+  await nav('Hoje');
+  // 20 dias de remédio (15/09 a 04/10) + 16 meses de seguro (jun/2025 a set/2026).
+  await page.getByRole('heading', { name: 'Atrasados (36)' }).waitFor();
+  await page.getByText('+19 anteriores').waitFor();
+  await page.getByText('+15 anteriores').waitFor();
+  await page.getByRole('button', { name: 'Ver todas as pendências (36)' }).click();
+  await dialog().getByText('16 vencimentos não pagos').waitFor();
+  await dialog().getByText('R$ 800,00').first().waitFor();
+  await page.screenshot({ path: `${SHOTS}/10-pendencias.png` });
+  await dialog().getByRole('button', { name: 'Ver as 16' }).click();
+  await dialog().getByText('10 de jun. de 2025').waitFor();
+  await dialog().getByRole('button', { name: 'Concluir as 20' }).click();
+  await dialog().getByText('Tarefas atrasadas').waitFor({ state: 'detached' });
+  await page.keyboard.press('Escape');
+  await page.getByRole('heading', { name: 'Atrasados (16)' }).waitFor();
+  await page.reload();
+  await page.getByRole('heading', { name: 'Atrasados (16)' }).waitFor();
+  await nav('Contas');
+  await page.getByRole('heading', { name: /Vencidas e não pagas \(16\)/ }).waitFor();
 });
 
 await check('Sem erros no console', async () => {

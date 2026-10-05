@@ -10,13 +10,15 @@ interface Props {
   /** Mostra a data (em listas que misturam dias). */
   showDate?: boolean;
   highlighted?: boolean;
+  /** Observação extra, ex.: "+3 anteriores pendentes". */
+  note?: string;
 }
 
 export function isLate(o: Occurrence, today: LocalDate): boolean {
   return o.status === 'pending' && o.kind !== 'event' && !!o.date && o.date < today;
 }
 
-export function ItemRow({ occ, showDate, highlighted }: Props) {
+export function ItemRow({ occ, showDate, highlighted, note }: Props) {
   const { today, setDone } = useStore();
   const { open } = useItemActions();
   const done = occ.status === 'done';
@@ -72,6 +74,7 @@ export function ItemRow({ occ, showDate, highlighted }: Props) {
             </span>
           )}
           {occ.isExample && <span className="badge badge-soft">Exemplo</span>}
+          {note && <span className="badge badge-late">{note}</span>}
         </span>
       </button>
       {isBill && (

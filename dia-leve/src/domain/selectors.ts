@@ -4,10 +4,12 @@ import {
   compareByDateTime,
   compareSuggested,
   findOccurrence,
+  groupOverdue,
   occurrencesBetween,
   overdue,
   undatedTasks,
 } from './occurrences';
+import type { OverdueGroup } from './occurrences';
 import type { Item, LocalDate, Occurrence } from './types';
 
 export const MAX_HIGHLIGHTS = 3;
@@ -21,8 +23,10 @@ export interface TodayView {
   otherTasks: Occurrence[];
   events: Occurrence[];
   bills: Occurrence[];
-  /** Atrasados que não estão nas prioridades. */
-  overdue: Occurrence[];
+  /** Resumo dos atrasados (fora das prioridades): uma linha por item. */
+  overdue: OverdueGroup[];
+  /** Total de ocorrências atrasadas (inclusive as resumidas). */
+  overdueTotal: number;
   doneToday: Occurrence[];
   undated: Occurrence[];
   progress: { done: number; total: number };
@@ -34,7 +38,9 @@ export function buildToday(items: Item[], today: LocalDate, highlightKeys: strin
   const tasks = todays.filter((o) => o.kind === 'task');
   const pendingTasks = tasks.filter((o) => o.status === 'pending');
   const late = overdue(items, today);
-  const lateTasks = late.filter((o) => o.kind === 'task');
+  // Sugestões consideram tarefas únicas atrasadas; ocorrências antigas de séries
+  // ficam na seção de atrasados (e em "Todas as pendências"), sem sumir.
+  const lateTasks = late.filter((o) => o.kind === 'task' && !o.isRecurring);
 
   // Destaques manuais válidos e ainda pendentes.
   const manual: Occurrence[] = [];
@@ -66,7 +72,8 @@ export function buildToday(items: Item[], today: LocalDate, highlightKeys: strin
     otherTasks,
     events,
     bills,
-    overdue: late.filter((o) => !prioKeys.has(o.key)),
+    overdue: groupOverdue(late.filter((o) => !prioKeys.has(o.key))),
+    overdueTotal: late.length,
     doneToday,
     undated,
     progress: { done: doneToday.length, total: tasks.length },

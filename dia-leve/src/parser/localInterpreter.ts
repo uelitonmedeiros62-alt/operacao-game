@@ -10,7 +10,9 @@ import type { InterpretContext, Interpreter, ParsedDraft } from './types';
  */
 
 const W = '[\\p{L}\\p{N}]'; // caractere de palavra com acentos
-const B = `(?<!${W})`; // início de palavra
+// Início de palavra sem "lookbehind" (não suportado no Safari antes do iOS 16.4):
+// consome o caractere anterior, o que é inofensivo porque o trecho é trocado por espaço.
+const B = `(?:^|[^\\p{L}\\p{N}])`;
 const E = `(?!${W})`; // fim de palavra
 
 function re(src: string, flags = 'iu'): RegExp {

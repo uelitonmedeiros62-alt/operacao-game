@@ -105,17 +105,15 @@ export function findOccurrence(items: Item[], key: string): Occurrence | null {
   return single(item);
 }
 
-/** Quantos dias para trás procuramos contas recorrentes não pagas. */
-export const OVERDUE_LOOKBACK_DAYS = 366;
-
 /**
  * Pendências atrasadas: tarefas e contas não concluídas com data anterior a hoje.
- * Séries de tarefas (diárias/semanais) não acumulam atrasos: a próxima ocorrência
- * já aparece no seu dia. Contas recorrentes acumulam, pois cada mês precisa ser pago.
+ * Nada é descartado por idade: toda ocorrência passada de uma série (tarefa diária,
+ * semanal ou conta mensal) continua pendente até ser concluída, paga ou excluída.
+ * A tela inicial mostra só um resumo (ver `summarizeOverdue`); a lista completa
+ * fica em "Todas as pendências".
  */
 export function overdue(items: Item[], today: LocalDate): Occurrence[] {
   const yesterday = addDays(today, -1);
-  const from = addDays(today, -OVERDUE_LOOKBACK_DAYS);
   const out: Occurrence[] = [];
   for (const it of items) {
     if (it.kind === 'event' || !it.date) continue;
@@ -123,12 +121,35 @@ export function overdue(items: Item[], today: LocalDate): Occurrence[] {
       if (it.status === 'pending' && it.date < today) out.push(single(it));
       continue;
     }
-    if (it.kind !== 'bill') continue;
-    for (const occ of expandItem(it, from, yesterday)) {
+    if (it.date > yesterday) continue;
+    for (const occ of expandItem(it, it.date, yesterday)) {
       if (occ.status === 'pending') out.push(occ);
     }
   }
   return out.sort(compareByDateTime);
+}
+
+export interface OverdueGroup {
+  /** Ocorrência mais recente (a que aparece no resumo). */
+  latest: Occurrence;
+  /** Todas as ocorrências pendentes do mesmo item, da mais antiga à mais recente. */
+  all: Occurrence[];
+}
+
+/**
+ * Agrupa as pendências por item: uma série com várias ocorrências atrasadas vira
+ * um único grupo, para o resumo não ficar enorme. Nenhuma ocorrência é perdida.
+ */
+export function groupOverdue(late: Occurrence[]): OverdueGroup[] {
+  const map = new Map<string, Occurrence[]>();
+  for (const o of late) {
+    const list = map.get(o.itemId) ?? [];
+    list.push(o);
+    map.set(o.itemId, list);
+  }
+  return [...map.values()]
+    .map((all) => ({ all, latest: all[all.length - 1] }))
+    .sort((a, b) => compareByDateTime(a.all[0], b.all[0]));
 }
 
 export function compareByDateTime(a: Occurrence, b: Occurrence): number {

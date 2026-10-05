@@ -54,3 +54,8 @@ export async function promptInstall(): Promise<boolean> {
   listeners.forEach((l) => l());
   return choice.outcome === 'accepted';
 }
+
+/** Versão de prévia em arquivo único (sem service worker e sem manifest). */
+export function isPreviewBuild(): boolean {
+  return typeof document !== 'undefined' && document.documentElement.dataset.variant === 'preview';
+}

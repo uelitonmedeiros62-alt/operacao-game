@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc -b",
     "e2e": "node scripts/e2e.mjs",
-    "icons": "node scripts/make-icons.mjs"
+    "icons": "node scripts/make-icons.mjs",
+    "build:single": "npm run build && node scripts/single-file.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

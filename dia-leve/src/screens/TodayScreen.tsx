@@ -3,7 +3,11 @@ import { formatLong, greeting } from '../domain/dates';
 import { buildToday } from '../domain/selectors';
 import { useStore } from '../state/AppStore';
 import { Icon } from '../ui/Icon';
-import { ItemList } from '../ui/ItemRow';
+import { ItemList, ItemRow } from '../ui/ItemRow';
+import { PendingDialog } from './PendingDialog';
+
+/** Quantos itens atrasados aparecem no resumo da tela Hoje. */
+const SUMMARY_LIMIT = 5;
 
 const capitalize = (s: string) => s.charAt(0).toLocaleUpperCase('pt-BR') + s.slice(1);
 
@@ -15,6 +19,7 @@ export function TodayScreen({ onAdd }: { onAdd(): void }) {
   );
   const [showDone, setShowDone] = useState(false);
   const [showUndated, setShowUndated] = useState(false);
+  const [showPending, setShowPending] = useState(false);
   const hasExample = items.some((i) => i.isExample);
   const { done, total } = view.progress;
 
@@ -94,11 +99,29 @@ export function TodayScreen({ onAdd }: { onAdd(): void }) {
       {view.overdue.length > 0 && (
         <section className="section section-late" aria-labelledby="sec-late">
           <h2 id="sec-late" className="section-title">
-            <Icon name="alert" /> Atrasados ({view.overdue.length})
+            <Icon name="alert" /> Atrasados ({view.overdueTotal})
           </h2>
-          <ItemList items={view.overdue} showDate />
+          <ul className="item-list">
+            {view.overdue.slice(0, SUMMARY_LIMIT).map((g) => (
+              <ItemRow
+                key={g.latest.key}
+                occ={g.latest}
+                showDate
+                note={g.all.length > 1 ? `+${g.all.length - 1} ${g.all.length === 2 ? 'anterior' : 'anteriores'}` : undefined}
+              />
+            ))}
+          </ul>
+          {view.overdue.length > SUMMARY_LIMIT && (
+            <p className="section-hint">
+              Mostrando {SUMMARY_LIMIT} de {view.overdue.length} itens atrasados.
+            </p>
+          )}
+          <button type="button" className="btn btn-ghost btn-block" onClick={() => setShowPending(true)}>
+            Ver todas as pendências ({view.overdueTotal})
+          </button>
         </section>
       )}
+      <PendingDialog open={showPending} onClose={() => setShowPending(false)} />
 
       {view.otherTasks.length > 0 && (
         <section className="section" aria-labelledby="sec-other">

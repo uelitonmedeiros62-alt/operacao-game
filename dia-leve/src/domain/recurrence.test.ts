@@ -1,5 +1,5 @@
 import { occurrenceDates } from './recurrence';
-import { expandItem, occurrencesBetween, overdue } from './occurrences';
+import { expandItem, groupOverdue, occurrencesBetween, overdue } from './occurrences';
 import { createItem, deleteItem, editItem, postpone, setDone, type ItemDraft } from './mutations';
 import type { Item } from './types';
 
@@ -148,9 +148,41 @@ describe('ocorrências independentes', () => {
     expect(occurrencesBetween([moved], '2026-10-12', '2026-10-12')).toHaveLength(0);
   });
 
-  it('contas recorrentes não pagas aparecem como atrasadas; tarefas diárias não acumulam', () => {
-    const daily = createItem(draft({ date: '2026-09-01', repeat: 'daily' }), NOW);
-    const late = overdue([bill, daily], '2027-01-05');
-    expect(late.map((o) => o.date)).toEqual(['2026-10-31', '2026-11-30', '2026-12-31']);
+  it('contas e tarefas recorrentes não concluídas continuam atrasadas, sem limite de tempo', () => {
+    const daily = createItem(draft({ title: 'Remédio', date: '2026-12-29', repeat: 'daily' }), NOW, 'rem');
+    const late = overdue([bill, daily], '2027-01-01');
+    expect(late.map((o) => `${o.itemId}@${o.date}`)).toEqual([
+      'aluguel@2026-10-31',
+      'aluguel@2026-11-30',
+      'rem@2026-12-29',
+      'rem@2026-12-30',
+      'aluguel@2026-12-31',
+      'rem@2026-12-31',
+    ]);
+  });
+
+  it('conta vencida há mais de 12 meses não desaparece', () => {
+    const late = overdue([bill], '2029-01-05');
+    expect(late[0].date).toBe('2026-10-31');
+    expect(late).toHaveLength(27); // out/2026 até dez/2028
+  });
+
+  it('concluir uma ocorrência antiga tira só ela das pendências', () => {
+    const paid = setDone(bill, '2026-11-30', true, NOW, '2027-01-05');
+    expect(overdue([paid], '2027-01-05').map((o) => o.date)).toEqual(['2026-10-31', '2026-12-31']);
+  });
+
+  it('agrupa pendências por item sem perder nenhuma', () => {
+    const one = createItem(draft({ title: 'Ligar banco', date: '2026-12-01' }), NOW, 'one');
+    const groups = groupOverdue(overdue([bill, one], '2027-01-05'));
+    expect(groups.map((g) => [g.latest.itemId, g.all.length, g.latest.date])).toEqual([
+      ['aluguel', 3, '2026-12-31'],
+      ['one', 1, '2026-12-01'],
+    ]);
+  });
+
+  it('ocorrência adiada para o futuro não conta como atrasada', () => {
+    const moved = postpone(bill, '2026-10-31', '2027-01-10', undefined, NOW);
+    expect(overdue([moved], '2026-11-05')).toHaveLength(0);
   });
 });
