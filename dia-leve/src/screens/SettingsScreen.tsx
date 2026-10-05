@@ -68,8 +68,9 @@ export function SettingsScreen() {
 
   const exportBackup = () => {
     const data = createBackup(items, settings);
-    downloadText(backupFileName(today), JSON.stringify(data, null, 2), 'application/json');
-    store.notify('Backup baixado. Guarde o arquivo em um lugar seguro.');
+    void downloadText(backupFileName(today), JSON.stringify(data, null, 2), 'application/json').then((ok) =>
+      store.notify(ok ? 'Backup pronto. Guarde o arquivo em um lugar seguro.' : 'Não foi possível salvar o backup aqui.'),
+    );
   };
 
   const onFile = async (file: File | undefined) => {
@@ -90,8 +91,13 @@ export function SettingsScreen() {
       store.notify('Não há compromissos futuros para exportar.');
       return;
     }
-    downloadText(`dia-leve-calendario-${today}.ics`, buildIcs(occ), 'text/calendar');
-    store.notify(`${occ.length} ${occ.length === 1 ? 'item exportado' : 'itens exportados'}.`);
+    void downloadText(`dia-leve-calendario-${today}.ics`, buildIcs(occ), 'text/calendar').then((ok) =>
+      store.notify(
+        ok
+          ? `${occ.length} ${occ.length === 1 ? 'item exportado' : 'itens exportados'}.`
+          : 'Não foi possível exportar para o calendário aqui.',
+      ),
+    );
   };
 
   const platform = detectPlatform();
@@ -229,6 +235,12 @@ export function SettingsScreen() {
           <input type="checkbox" checked={includeBills} onChange={(e) => setIncludeBills(e.target.checked)} />
           Incluir vencimentos de contas
         </label>
+        {isPreviewBuild() && (
+          <p className="hint notice">
+            <Icon name="info" size={16} /> Nesta prévia não é possível exportar arquivos de calendário (.ics). Na versão
+            publicada a partir da pasta dist isso funciona.
+          </p>
+        )}
         <button type="button" className="btn btn-secondary" onClick={exportIcs}>
           <Icon name="calendar" /> Exportar para o calendário (.ics)
         </button>

@@ -7,6 +7,7 @@ import type { ItemDraft, Scope } from '../domain/mutations';
 import { KIND_LABEL, type Occurrence } from '../domain/types';
 import { buildIcs } from '../services/ics';
 import { downloadText } from '../services/download';
+import { isPreviewBuild } from '../services/install';
 import { useStore } from '../state/AppStore';
 import { Dialog } from './Dialog';
 import { occurrenceToForm, validateForm, type FormErrors, type FormState } from './formModel';
@@ -128,12 +129,14 @@ export function ItemActionsProvider({ children }: { children: ReactNode }) {
                 <Icon name="star" /> {highlighted ? 'Tirar do destaque de hoje' : 'Destacar hoje'}
               </button>
             )}
-            {occ.kind === 'event' && occ.date && (
+            {occ.kind === 'event' && occ.date && !isPreviewBuild() && (
               <button
                 type="button"
                 className="action"
                 onClick={() => {
-                  downloadText(`${occ.title.slice(0, 40) || 'compromisso'}.ics`, buildIcs([occ]), 'text/calendar');
+                  void downloadText(`${occ.title.slice(0, 40) || 'compromisso'}.ics`, buildIcs([occ]), 'text/calendar').then(
+                    (ok) => !ok && store.notify('Não foi possível exportar para o calendário aqui.'),
+                  );
                   close();
                 }}
               >

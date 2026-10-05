@@ -26,3 +26,19 @@ const out = new URL('../dist-single/', import.meta.url);
 mkdirSync(out, { recursive: true });
 writeFileSync(new URL('index.html', out), html);
 console.log(`dist-single/index.html (${Math.round(html.length / 1024)} KB)`);
+
+// Variante "fragmento" para hospedagens que já envolvem a página em <html>/<head>/<body>
+// (ex.: artifacts do claude.ai). Marca a prévia por script, pois o atributo do <html> se perde.
+const title = /<title>[^<]*<\/title>/.exec(html)[0];
+const styles = [...html.matchAll(/<style>[\s\S]*?<\/style>/g)].map((m) => m[0]).join('\n');
+const scripts = [...html.matchAll(/<script type="module">[\s\S]*?<\/script>/g)].map((m) => m[0]).join('\n');
+const fragment = [
+  title,
+  '<meta name="theme-color" content="#0f6e6e">',
+  styles,
+  '<div id="root"></div>',
+  '<script>document.documentElement.dataset.variant = "preview";</script>',
+  scripts,
+].join('\n');
+writeFileSync(new URL('dia-leve.html', out), fragment);
+console.log(`dist-single/dia-leve.html (${Math.round(fragment.length / 1024)} KB)`);
